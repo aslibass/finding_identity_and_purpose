@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# SQLite
+backend/workshop.db
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Test screenshots
+frontend/*.png
+tests/personas.ts
+
+# OS
+.DS_Store
+Thumbs.db
