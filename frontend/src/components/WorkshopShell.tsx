@@ -11,6 +11,7 @@ import { useParticipantSocket } from '../hooks/useWebSocket'
 import { saveSession } from '../stores/session'
 import { STAGE_ORDER } from '../api/types'
 import { ThemeToggle } from './ThemeToggle'
+import { ExportButton } from './ExportButton'
 
 interface Props {
   participantId: number
@@ -81,10 +82,11 @@ export function WorkshopShell({ participantId, displayName, roomCode, initialSta
             <h2 className="font-serif text-4xl font-medium text-charcoal mb-4">
               Well done.
             </h2>
-            <p className="font-sans text-base text-muted leading-relaxed">
+            <p className="font-sans text-base text-muted leading-relaxed mb-8">
               You have completed the Identity &amp; Purpose workshop.<br />
-              Your reflections are saved and available to export from the menu.
+              Download your reflections below.
             </p>
+            <ExportButton participantId={participantId} displayName={displayName} />
           </div>
         ) : (
           renderStage()
