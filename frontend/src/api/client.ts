@@ -1,6 +1,5 @@
 import type { RoomOut, ParticipantOut, AnswerOut, RoomStatus } from './types'
-
-const BASE = 'http://localhost:8000'
+import { API_BASE as BASE } from './env'
 
 async function post<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {

@@ -1,8 +1,6 @@
+import os
 from datetime import datetime, timezone
 
-
-def _now() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
 from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -20,12 +18,20 @@ from app.rooms import (
     HIGH_VULNERABILITY_STAGES,
 )
 
+
+def _now() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
+_origins = ["*"] if _raw_origins == "*" else [o.strip() for o in _raw_origins.split(",")]
+
 app = FastAPI(title="Identity Purpose Workshop")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=_origins,
+    allow_credentials=_raw_origins != "*",
     allow_methods=["*"],
     allow_headers=["*"],
 )

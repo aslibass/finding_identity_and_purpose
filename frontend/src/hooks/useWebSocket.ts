@@ -1,6 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react'
-
-const WS_BASE = 'ws://localhost:8000'
+import { WS_BASE } from '../api/env'
 
 export function useParticipantSocket(participantId: number | null) {
   const wsRef = useRef<WebSocket | null>(null)

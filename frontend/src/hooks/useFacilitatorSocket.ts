@@ -1,6 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
-
-const WS_BASE = 'ws://localhost:8000'
+import { WS_BASE } from '../api/env'
 
 export interface ParticipantState {
   participant_id: number
