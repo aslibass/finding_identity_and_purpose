@@ -17,22 +17,44 @@ export function ExportButton({ participantId, displayName }: Props) {
     try {
       const answers = await api.getAnswers(participantId)
 
-      const exportData = {
-        exportDate: new Date().toISOString(),
-        participantName: displayName,
-        reflections: answers.map(answer => ({
-          stage: answer.stage_id,
-          stageName: STAGE_LABELS[answer.stage_id as keyof typeof STAGE_LABELS] || answer.stage_id,
-          question: answer.question_key,
-          answer: answer.answer_text,
-          savedAt: answer.updated_at,
-        })),
+      const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+      let markdown = `# Identity & Purpose Workshop\n\n`
+      markdown += `**Participant:** ${displayName}\n`
+      markdown += `**Completed:** ${date}\n\n`
+      markdown += `---\n\n`
+
+      // Group answers by stage
+      const answersByStage = new Map<string, typeof answers>()
+      answers.forEach(answer => {
+        if (!answersByStage.has(answer.stage_id)) {
+          answersByStage.set(answer.stage_id, [])
+        }
+        answersByStage.get(answer.stage_id)!.push(answer)
+      })
+
+      // Render each stage with its answers
+      for (const stageId of Object.keys(STAGE_LABELS)) {
+        const stageAnswers = answersByStage.get(stageId)
+        if (!stageAnswers) continue
+
+        const stageName = STAGE_LABELS[stageId as keyof typeof STAGE_LABELS]
+        markdown += `## ${stageId}: ${stageName}\n\n`
+
+        stageAnswers.forEach((answer, idx) => {
+          markdown += `### Question ${idx + 1}\n`
+          markdown += `${answer.question_key}\n\n`
+          markdown += `**Your Response:**\n`
+          markdown += `${answer.answer_text}\n\n`
+        })
+
+        markdown += `---\n\n`
       }
 
       const timestamp = new Date().toISOString().split('T')[0]
-      const filename = `identity-purpose-${displayName.replace(/\s+/g, '-')}-${timestamp}.json`
+      const filename = `identity-purpose-${displayName.replace(/\s+/g, '-')}-${timestamp}.md`
 
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+      const blob = new Blob([markdown], { type: 'text/markdown' })
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
