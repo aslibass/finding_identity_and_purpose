@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { api } from '../api/client'
 import { saveSession } from '../stores/session'
 
@@ -35,7 +35,7 @@ export function JoinScreen({ onJoined, onBack }: Props) {
   }
 
   return (
-    <div className="min-h-svh bg-ivory flex items-center justify-center px-6 fade-in">
+    <div className="min-h-svh bg-ivory dark:bg-bg flex items-center justify-center px-6 fade-in">
       <div className="w-full max-w-md">
 
         {/* Wordmark */}
@@ -60,7 +60,7 @@ export function JoinScreen({ onJoined, onBack }: Props) {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="How you'd like to be known"
-              className="w-full bg-parchment border border-sand rounded px-4 py-3 font-sans text-charcoal placeholder-muted/60 focus:outline-none focus:border-camel transition-colors"
+              className="w-full bg-input-bg border border-sand dark:border-sand rounded px-4 py-3 font-sans text-charcoal dark:text-charcoal placeholder-muted/60 focus:outline-none focus:border-camel transition-colors"
               autoComplete="off"
               maxLength={60}
             />
@@ -75,7 +75,7 @@ export function JoinScreen({ onJoined, onBack }: Props) {
               value={code}
               onChange={e => setCode(e.target.value.toUpperCase())}
               placeholder="4-letter code"
-              className="w-full bg-parchment border border-sand rounded px-4 py-3 font-sans text-charcoal placeholder-muted/60 tracking-widest uppercase focus:outline-none focus:border-camel transition-colors"
+              className="w-full bg-input-bg border border-sand dark:border-sand rounded px-4 py-3 font-sans text-charcoal dark:text-charcoal placeholder-muted/60 tracking-widest uppercase focus:outline-none focus:border-camel transition-colors"
               autoComplete="off"
               maxLength={4}
             />
@@ -101,7 +101,7 @@ export function JoinScreen({ onJoined, onBack }: Props) {
 
         {onBack && (
           <div className="mt-6 text-center">
-            <button onClick={onBack} className="font-sans text-xs text-muted hover:text-charcoal transition-colors">
+            <button onClick={onBack} className="font-sans text-xs text-muted hover:text-charcoal dark:hover:text-charcoal transition-colors">
               ← Back
             </button>
           </div>

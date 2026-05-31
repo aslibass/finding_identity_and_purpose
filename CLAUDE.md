@@ -30,13 +30,30 @@ Use the `frontend-design` skill (`/frontend-design`) whenever building any front
 
 ### Ollama MCP
 
-Use the Ollama MCP server tools throughout the build:
+Claude is the supervisor. Ollama is the worker. Claude plans, coordinates, judges output quality, and handles anything requiring theological or architectural nuance. Ollama does the execution — code generation, review, testing, refactoring. This keeps Claude credit usage low.
 
-- `ollama_generate_code` / `ollama_generate_code_with_context` — for generating backend and frontend code
-- `ollama_review_code` / `ollama_review_file` — before committing any new module
-- `ollama_fix_code` — when debugging or resolving errors
-- `ollama_write_tests` — when adding tests in /tests
-- `ollama_explain_code` — when context on existing code is needed
-- `ollama_refactor_code` — for cleanup and simplification passes
+Ollama costs nothing to run. Default to it. Only do work in Claude directly when Ollama's output is clearly wrong or the task requires Claude-level judgment.
 
-Use Ollama tools proactively, not just reactively — run a review pass after each Phase before moving to the next.
+#### Ollama handles
+
+- Code generation → `ollama_generate_code` / `ollama_generate_code_with_context`
+- Code review → `ollama_general_task` with file content in the context field
+- Bug fixing → `ollama_fix_code`
+- Refactoring → `ollama_refactor_code`
+- Test writing → `ollama_write_tests`
+- Code explanation → `ollama_explain_code`
+- Expert panel reviews for structure, architecture, naming, and delivery risk
+- First-pass drafts of workshop content
+
+#### Claude handles
+
+- Theological review (trusted sources, biblical fidelity, pastoral sensitivity)
+- Final judgment on Ollama output before committing
+- Tasks that require reading many files and synthesising across them
+- Anything Ollama tried and got wrong
+
+#### Rules
+
+- Use `ollama_general_task` not `ollama_review_file` — the file review tool is unreliable on Windows paths; pass file content in the context field instead
+- No screenshot-based verification loops — use `tsc --noEmit` and describe manual steps
+- No parallel Claude sub-agents for reviews — one `ollama_general_task` call instead
