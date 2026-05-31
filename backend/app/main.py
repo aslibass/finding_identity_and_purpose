@@ -28,12 +28,15 @@ _origins = ["*"] if _raw_origins == "*" else [o.strip() for o in _raw_origins.sp
 
 app = FastAPI(title="Identity Purpose Workshop")
 
+# CORS configuration: allow all origins for development, or specific origins for production
+# WebSocket connections require explicit origin support
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins,
-    allow_credentials=_raw_origins != "*",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
