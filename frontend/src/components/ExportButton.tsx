@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { api } from '../api/client'
 import { STAGE_LABELS } from '../api/types'
+import { buildArtifact, buildPrompt } from '../utils/trustedVoiceUtils'
 
 interface Props {
   participantId: number
@@ -34,22 +35,35 @@ export function ExportButton({ participantId, displayName }: Props) {
       })
 
       // Render each stage with its answers
+      markdown += `## Your Reflections by Stage\n\n`
       for (const stageId of Object.keys(STAGE_LABELS)) {
         const stageAnswers = answersByStage.get(stageId)
         if (!stageAnswers) continue
 
         const stageName = STAGE_LABELS[stageId as keyof typeof STAGE_LABELS]
-        markdown += `## ${stageId}: ${stageName}\n\n`
+        markdown += `### ${stageId}: ${stageName}\n\n`
 
         stageAnswers.forEach((answer, idx) => {
-          markdown += `### Question ${idx + 1}\n`
-          markdown += `${answer.question_key}\n\n`
-          markdown += `**Your Response:**\n`
+          markdown += `**Q${idx + 1}: ${answer.question_key}**\n`
           markdown += `${answer.answer_text}\n\n`
         })
-
-        markdown += `---\n\n`
       }
+
+      // Build and include the artifact (assembled summary)
+      const artifact = buildArtifact()
+      if (artifact.trim()) {
+        markdown += `---\n\n`
+        markdown += `## The Convergence: Your Assembled Journey\n\n`
+        markdown += `This is your story assembled—the arc from identity to purpose:\n\n`
+        markdown += `\`\`\`\n${artifact}\n\`\`\`\n\n`
+      }
+
+      // Build and include the prompt (theological review framework)
+      const prompt = buildPrompt(artifact)
+      markdown += `---\n\n`
+      markdown += `## Theological Review Prompt\n\n`
+      markdown += `Use this prompt with Claude or a trusted spiritual director for deeper review of your journey:\n\n`
+      markdown += `\`\`\`\n${prompt}\n\`\`\`\n`
 
       const timestamp = new Date().toISOString().split('T')[0]
       const filename = `identity-purpose-${displayName.replace(/\s+/g, '-')}-${timestamp}.md`
